@@ -14,15 +14,19 @@ pub struct GooseWindow;
 impl GooseWindow {
     pub async fn run_at(offset_x: i32, offset_y: i32) {
         let event_loop = EventLoop::new().unwrap();
-        let width = 200;
-        let height = 200;
+        // Get the primary monitor size
+        let monitor = event_loop.available_monitors().next().unwrap();
+        let size = monitor.size();
+        let width = size.width.saturating_sub(1);
+        let height = size.height.saturating_sub(1);
 
         let window = WindowBuilder::new()
             .with_title("Code Honker Goose")
-            .with_inner_size(LogicalSize::new(width, height))
+            .with_decorations(false)
             .with_resizable(false)
-            .with_position(winit::dpi::PhysicalPosition::new(offset_x + 100, offset_y + 100))
             .with_transparent(true)
+            .with_inner_size(winit::dpi::PhysicalSize::new(width, height))
+            .with_position(winit::dpi::PhysicalPosition::new(1, 1))
             .build(&event_loop)
             .unwrap();
 
